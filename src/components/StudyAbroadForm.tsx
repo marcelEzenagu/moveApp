@@ -62,21 +62,189 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
     openToConsultation: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  //   const handleSubmit = (e: React.FormEvent) => {
+  //     e.preventDefault();
+
+  //     // Create Google Form URL with pre-filled data
+  //     // Replace with your actual Google Form ID
+  //     const googleUrl =
+  //       "https://script.google.com/macros/s/AKfycbylB5jb5S14PglhhFcEe_0AEeEFZLv3IGKH91BrJTYJzvtYsJM6In0-R8qqUuVHOmD6dA/exec";
+
+  //     toast({
+  //       title: "Form Submitted Successfully!",
+  //       description:
+  //         "We'll review your application and get back to you within 24-48 hours.",
+  //     });
+
+  //     // In production, you would redirect to Google Form or submit via API
+  //     console.log("Form Data:", formData);
+  //   };
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log("Submitting…");
+
+  //   const requiredFields = [
+  //     "gender",
+  //     "educationLevel",
+  //     "studyLevel",
+  //     "openToOtherCountries",
+  //     "previousVisa",
+  //     "hasPassport",
+  //     "hasVisaStamps",
+  //     "openToConsultation",
+  //   ];
+
+  //   const newErrors: Record<string, string> = {};
+
+  //   requiredFields.forEach((field) => {
+  //     if (!formData[field]) {
+  //       newErrors[field] = "This field is required.";
+  //     }
+  //   });
+
+  //   setErrors(newErrors);
+
+  //   if (Object.keys(newErrors).length > 0) {
+  //     toast({
+  //       title: "Incomplete Form",
+  //       description: "Please fill in all required fields.",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
+
+  //   try {
+  //     const googleUrl =
+  //       "https://script.google.com/macros/s/AKfycbylB5jb5S14PglhhFcEe_0AEeEFZLv3IGKH91BrJTYJzvtYsJM6In0-R8qqUuVHOmD6dA/exec";
+
+  //     await fetch(googleUrl, {
+  //       method: "POST",
+  //       mode: "no-cors",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     toast({
+  //       title: "Form Submitted Successfully!",
+  //       description: "We’ve received your application!",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error submitting form", error);
+  //     toast({
+  //       title: "Submission failed",
+  //       description: "Please try again later.",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Submitting…");
 
-    // Create Google Form URL with pre-filled data
-    // Replace with your actual Google Form ID
-    const googleFormUrl = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform";
+    const requiredFields = [
+      "gender",
+      "educationLevel",
+      "studyLevel",
+      "openToOtherCountries",
+      "previousVisa",
+      "hasPassport",
+      "hasVisaStamps",
+      "openToConsultation",
+    ];
 
-    toast({
-      title: "Form Submitted Successfully!",
-      description:
-        "We'll review your application and get back to you within 24-48 hours.",
+    const newErrors: Record<string, string> = {};
+    requiredFields.forEach((field) => {
+      if (!formData[field]) {
+        newErrors[field] = "This field is required.";
+      }
     });
 
-    // In production, you would redirect to Google Form or submit via API
-    console.log("Form Data:", formData);
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      toast({
+        title: "Incomplete Form",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true); //  Start loading
+
+      const googleUrl =
+        "https://script.google.com/macros/s/AKfycbylB5jb5S14PglhhFcEe_0AEeEFZLv3IGKH91BrJTYJzvtYsJM6In0-R8qqUuVHOmD6dA/exec";
+
+      await fetch(googleUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      toast({
+        title: "Form Submitted Successfully!",
+        description: "We’ve received your application!",
+      });
+
+      resetForm(); //  Clear the form
+      window.scrollTo({ top: 0, behavior: "smooth" }); // Optional scroll up
+    } catch (error) {
+      console.error("Error submitting form", error);
+      toast({
+        title: "Submission failed",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false); //  Stop loading
+    }
+  };
+  const resetForm = () => {
+    setFormData({
+      fullName: "",
+      email: "",
+      whatsapp: "",
+      age: "",
+      gender: "",
+
+      educationLevel: "",
+      schoolName: "",
+      courseOfStudy: "",
+      cgpa: "",
+      graduationYear: "",
+
+      studyLevel: "",
+      preferredField: "",
+      startDate: "",
+      preferredCountry: "",
+      openToOtherCountries: "",
+      otherCountries: "",
+
+      sponsor: "",
+      budgetRange: "",
+      proofOfFunds: "",
+
+      previousVisa: "",
+      visaCountry: "",
+      visaStatus: "",
+      hasPassport: "",
+      hasVisaStamps: "",
+      stampCount: "",
+      stampDetails: "",
+
+      openToConsultation: "",
+    });
+
+    setErrors({});
+    // setTouched({});
   };
 
   const handleChange = (field: string, value: string) => {
@@ -166,8 +334,10 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Gender (Optional)</Label>
+                    <Label>Gender *</Label>
                     <RadioGroup
+                      name="gender"
+                      required
                       value={formData.gender}
                       onValueChange={(value) => handleChange("gender", value)}
                     >
@@ -180,10 +350,14 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                         <Label htmlFor="female">Female</Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="other" id="other" />
-                        <Label htmlFor="other">Prefer not to say</Label>
+                        <RadioGroupItem value="others" id="others" />
+                        <Label htmlFor="others">Others</Label>
                       </div>
                     </RadioGroup>
+
+                    {errors.gender && (
+                      <p className="text-sm text-red-500">{errors.gender}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -197,31 +371,27 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                 <div className="space-y-2">
                   <Label>Highest Level of Education Completed *</Label>
                   <RadioGroup
+                    name="educationLevel"
+                    required
                     value={formData.educationLevel}
                     onValueChange={(value) => handleChange("educationLevel", value)}
-                    required
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="secondary" id="secondary" />
-                      <Label htmlFor="secondary">Secondary / High School</Label>
+                      <RadioGroupItem value="bachelor" id="bachelor" />
+                      <Label htmlFor="bachelor">Bachelor’s</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="ond" id="ond" />
-                      <Label htmlFor="ond">OND / Diploma</Label>
+                      <RadioGroupItem value="master" id="master" />
+                      <Label htmlFor="master">Master’s</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="bachelors" id="bachelors" />
-                      <Label htmlFor="bachelors">Bachelor's Degree</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="masters" id="masters" />
-                      <Label htmlFor="masters">Master's Degree</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="edu-other" id="edu-other" />
-                      <Label htmlFor="edu-other">Other</Label>
+                      <RadioGroupItem value="phd" id="phd" />
+                      <Label htmlFor="phd">PhD</Label>
                     </div>
                   </RadioGroup>
+                  {errors.educationLevel && (
+                    <p className="text-sm text-red-500">{errors.educationLevel}</p>
+                  )}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -251,6 +421,7 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                     <Label htmlFor="cgpa">CGPA or Grade</Label>
                     <Input
                       id="cgpa"
+                      required
                       value={formData.cgpa}
                       onChange={(e) => handleChange("cgpa", e.target.value)}
                       placeholder="e.g., 3.5 or First Class"
@@ -279,35 +450,24 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                 <div className="space-y-2">
                   <Label>What level do you want to study abroad? *</Label>
                   <RadioGroup
+                    name="studyLevel"
+                    required
                     value={formData.studyLevel}
                     onValueChange={(value) => handleChange("studyLevel", value)}
-                    required
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="undergraduate" id="undergraduate" />
-                      <Label htmlFor="undergraduate">
-                        Undergraduate (BSc, Nursing, etc.)
-                      </Label>
+                      <Label htmlFor="undergraduate">Undergraduate</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="postgraduate" id="postgraduate" />
-                      <Label htmlFor="postgraduate">
-                        Postgraduate (Master's, MBA, MSc, etc.)
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="shortcourse" id="shortcourse" />
-                      <Label htmlFor="shortcourse">Short Course / Diploma</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="language" id="language" />
-                      <Label htmlFor="language">Language Course</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="study-other" id="study-other" />
-                      <Label htmlFor="study-other">Other</Label>
+                      <Label htmlFor="postgraduate">Postgraduate</Label>
                     </div>
                   </RadioGroup>
+
+                  {errors.studyLevel && (
+                    <p className="text-sm text-red-500">{errors.studyLevel}</p>
+                  )}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -329,6 +489,7 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                     <Input
                       id="startDate"
                       required
+                      // type="date"
                       value={formData.startDate}
                       onChange={(e) => handleChange("startDate", e.target.value)}
                       placeholder="e.g., September 2026"
@@ -350,19 +511,24 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                 <div className="space-y-2">
                   <Label>Are you open to other country options? *</Label>
                   <RadioGroup
+                    name="openToOtherCountries"
+                    required
                     value={formData.openToOtherCountries}
                     onValueChange={(value) => handleChange("openToOtherCountries", value)}
-                    required
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="open-yes" />
-                      <Label htmlFor="open-yes">Yes</Label>
+                      <RadioGroupItem value="yes" id="yesCountries" />
+                      <Label htmlFor="yesCountries">Yes</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="open-no" />
-                      <Label htmlFor="open-no">No</Label>
+                      <RadioGroupItem value="no" id="noCountries" />
+                      <Label htmlFor="noCountries">No</Label>
                     </div>
                   </RadioGroup>
+
+                  {errors.openToOtherCountries && (
+                    <p className="text-sm text-red-500">{errors.openToOtherCountries}</p>
+                  )}
                 </div>
 
                 {formData.openToOtherCountries === "yes" && (
@@ -380,119 +546,33 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                 )}
               </div>
 
-              {/* Section 4: Financial Preparation */}
-              <div className="space-y-6">
-                <h3 className="text-2xl font-bold text-primary border-b-2 border-primary/20 pb-2">
-                  Section 4: Financial Preparation
-                </h3>
-
-                <div className="space-y-2">
-                  <Label>Who will sponsor your studies? *</Label>
-                  <RadioGroup
-                    value={formData.sponsor}
-                    onValueChange={(value) => handleChange("sponsor", value)}
-                    required
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="family" id="family" />
-                      <Label htmlFor="family">Parents / Family</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="self" id="self" />
-                      <Label htmlFor="self">Self-funded</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="scholarship" id="scholarship" />
-                      <Label htmlFor="scholarship">Scholarship</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="loan" id="loan" />
-                      <Label htmlFor="loan">Student Loan</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="combination" id="combination" />
-                      <Label htmlFor="combination">Combination of the above</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Estimated budget range for tuition & living (per year) *</Label>
-                  <RadioGroup
-                    value={formData.budgetRange}
-                    onValueChange={(value) => handleChange("budgetRange", value)}
-                    required
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="under5k" id="under5k" />
-                      <Label htmlFor="under5k">Under $5,000</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="5-10k" id="5-10k" />
-                      <Label htmlFor="5-10k">$5,000–$10,000</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="10-20k" id="10-20k" />
-                      <Label htmlFor="10-20k">$10,000–$20,000</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="over20k" id="over20k" />
-                      <Label htmlFor="over20k">Over $20,000</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="notsure" id="notsure" />
-                      <Label htmlFor="notsure">Not sure yet</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>
-                    Do you have proof of funds or sponsor's statement ready? *
-                  </Label>
-                  <RadioGroup
-                    value={formData.proofOfFunds}
-                    onValueChange={(value) => handleChange("proofOfFunds", value)}
-                    required
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="proof-yes" />
-                      <Label htmlFor="proof-yes">Yes</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="proof-no" />
-                      <Label htmlFor="proof-no">No</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="inprocess" id="inprocess" />
-                      <Label htmlFor="inprocess">In process</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              </div>
-
               {/* Section 5: Visa and Travel Info */}
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-primary border-b-2 border-primary/20 pb-2">
-                  Section 5: Visa and Travel Info
+                  Section 4: Visa and Travel Info
                 </h3>
 
                 <div className="space-y-2">
                   <Label>Have you ever applied for a visa before? *</Label>
                   <RadioGroup
+                    name="previousVisa"
+                    required
                     value={formData.previousVisa}
                     onValueChange={(value) => handleChange("previousVisa", value)}
-                    required
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="visa-yes" />
-                      <Label htmlFor="visa-yes">Yes</Label>
+                      <RadioGroupItem value="yes" id="yesVisa" />
+                      <Label htmlFor="yesVisa">Yes</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="visa-no" />
-                      <Label htmlFor="visa-no">No</Label>
+                      <RadioGroupItem value="no" id="noVisa" />
+                      <Label htmlFor="noVisa">No</Label>
                     </div>
                   </RadioGroup>
+
+                  {errors.previousVisa && (
+                    <p className="text-sm text-red-500">{errors.previousVisa}</p>
+                  )}
                 </div>
 
                 {formData.previousVisa === "yes" && (
@@ -501,6 +581,7 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                       <Label htmlFor="visaCountry">Which country did you apply to?</Label>
                       <Input
                         id="visaCountry"
+                        required
                         value={formData.visaCountry}
                         onChange={(e) => handleChange("visaCountry", e.target.value)}
                         placeholder="Country name"
@@ -511,6 +592,7 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                       <Label>Was it approved or denied?</Label>
                       <RadioGroup
                         value={formData.visaStatus}
+                        name="visaStatus"
                         onValueChange={(value) => handleChange("visaStatus", value)}
                       >
                         <div className="flex items-center space-x-2">
@@ -529,17 +611,18 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                 <div className="space-y-2">
                   <Label>Do you have your international passport? *</Label>
                   <RadioGroup
+                    name="hasPassport"
+                    required
                     value={formData.hasPassport}
                     onValueChange={(value) => handleChange("hasPassport", value)}
-                    required
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="passport-yes" />
-                      <Label htmlFor="passport-yes">Yes</Label>
+                      <RadioGroupItem value="yes" id="yesPassport" />
+                      <Label htmlFor="yesPassport">Yes</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="passport-no" />
-                      <Label htmlFor="passport-no">No</Label>
+                      <RadioGroupItem value="no" id="noPassport" />
+                      <Label htmlFor="noPassport">No</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -547,17 +630,18 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                 <div className="space-y-2">
                   <Label>Do you have any visa stamps on your passport? *</Label>
                   <RadioGroup
+                    name="hasVisaStamps"
+                    required
                     value={formData.hasVisaStamps}
                     onValueChange={(value) => handleChange("hasVisaStamps", value)}
-                    required
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="stamps-yes" />
-                      <Label htmlFor="stamps-yes">Yes</Label>
+                      <RadioGroupItem value="yes" id="yesStamps" />
+                      <Label htmlFor="yesStamps">Yes</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="stamps-no" />
-                      <Label htmlFor="stamps-no">No</Label>
+                      <RadioGroupItem value="no" id="noStamps" />
+                      <Label htmlFor="noStamps">No</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -590,10 +674,10 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                 )}
               </div>
 
-              {/* Section 6: Consultation */}
+              {/* Section 5: Consultation */}
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-primary border-b-2 border-primary/20 pb-2">
-                  Section 6: Consultation & Follow-up
+                  Section 5: Consultation & Follow-up
                 </h3>
 
                 <div className="space-y-2">
@@ -602,30 +686,42 @@ export const StudyAbroadForm = ({ onBack }: StudyAbroadFormProps) => {
                     scholarship? *
                   </Label>
                   <RadioGroup
+                    name="openToConsultation"
+                    required
                     value={formData.openToConsultation}
                     onValueChange={(value) => handleChange("openToConsultation", value)}
-                    required
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="consult-yes" />
-                      <Label htmlFor="consult-yes">Yes</Label>
+                      <RadioGroupItem value="yes" id="yesConsult" />
+                      <Label htmlFor="yesConsult">Yes</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="consult-no" />
-                      <Label htmlFor="consult-no">No</Label>
+                      <RadioGroupItem value="no" id="noConsult" />
+                      <Label htmlFor="noConsult">No</Label>
                     </div>
                   </RadioGroup>
                 </div>
               </div>
 
               {/* Submit Button */}
-              <div className="flex justify-center pt-6">
+              {/* <div className="flex justify-center pt-6">
                 <Button
                   type="submit"
                   size="lg"
                   className="gradient-hero text-white px-12 py-6 text-lg shadow-card hover:shadow-xl transition-smooth"
                 >
                   Submit Application
+                </Button>
+              </div> */}
+
+              <div className="flex justify-center pt-6">
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={loading}
+                  className="gradient-hero text-white px-12 py-6 text-lg shadow-card hover:shadow-xl transition-smooth"
+                >
+                  {loading ? "Submitting..." : "Submit Application"}
                 </Button>
               </div>
             </form>
