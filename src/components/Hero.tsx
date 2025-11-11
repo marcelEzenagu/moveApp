@@ -39,9 +39,7 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
             Study Abroad,
             <br />
-            <span className="gradient-warm bg-clip-text text-transparent">
-              Transform Your Future
-            </span>
+            <span className=" bg-clip-text text-white">Transform Your Future</span>
           </h1>
 
           <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-2xl">
@@ -62,7 +60,8 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
             <Button
               size="lg"
               variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-6 transition-smooth"
+              onClick={onGetStartedClick}
+              className="border-2 border-white text-secondary hover:bg-white hover:text-primary text-lg px-8 py-6 transition-smooth"
             >
               Explore Destinations
             </Button>
