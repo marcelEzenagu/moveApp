@@ -21,13 +21,25 @@ export const Footer = () => {
               opportunities.
             </p>
             <div className="flex gap-3">
-              <a href="#" className="hover:text-secondary transition-smooth">
+              <a
+                href="https://web.facebook.com/profile.php?id=61583240469747"
+                target="_blank"
+                className="hover:text-secondary transition-smooth"
+              >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="hover:text-secondary transition-smooth">
+              <a
+                href="https://x.com/moveabroadideas"
+                target="_blank"
+                className="hover:text-secondary transition-smooth"
+              >
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="hover:text-secondary transition-smooth">
+              <a
+                target="_blank"
+                href="https://www.instagram.com/move_abroad_service/"
+                className="hover:text-secondary transition-smooth"
+              >
                 <Instagram className="w-5 h-5" />
               </a>
               <a href="#" className="hover:text-secondary transition-smooth">
@@ -108,7 +120,7 @@ export const Footer = () => {
                 <MapPin className="w-5 h-5 mt-1 flex-shrink-0" />
                 <span className="text-white/80">123 Education Plaza, Lagos, Nigeria</span>
               </li>
-              <li className="flex items-center gap-2">
+              {/* <li className="flex items-center gap-2">
                 <Phone className="w-5 h-5 flex-shrink-0" />
                 <a
                   href="tel:+2348000000000"
@@ -116,15 +128,15 @@ export const Footer = () => {
                 >
                   +234 800 000 0000
                 </a>
-              </li>
+              </li> */}
               <li className="flex items-center gap-2">
                 <Mail className="w-5 h-5 flex-shrink-0" />
-                <a
+                {/* <a
                   href="mailto:info@moveabroad.com"
                   className="text-white/80 hover:text-white transition-smooth"
                 >
                   info@moveabroad.com
-                </a>
+                </a> */}
               </li>
             </ul>
             <div className="mt-4">
